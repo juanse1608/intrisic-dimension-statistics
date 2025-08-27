@@ -93,6 +93,7 @@ class BaseManifold(metaclass=ManifoldMeta):
 	abstract = True
 	name: str
 	base_dim: int
+	intrinsic_dimension: int
 	embedded: bool = False
 
 	def ambient_dim(self) -> int:
@@ -125,6 +126,7 @@ class MBurr(BaseManifold):
 		if dim < 1:
 			raise ValueError('dim must be >= 1')
 		self.base_dim = dim
+		self.intrinsic_dimension = dim
 		self.alpha = float(alpha)
 		self.embedded = False
 
@@ -154,10 +156,11 @@ class Paraboloid(BaseManifold):
 		if dim < 2:
 			raise ValueError('dim must be >= 2 (because underlying uses dim-1)')
 		self.base_dim = dim
+		self.intrinsic_dimension = dim-1
 		self.embedded = True
 
 	def _core(self, n: int, rng: np.random.Generator) -> np.ndarray:
-		x = MBurr(self.base_dim - 1, alpha=1.0).sample(n, rng)
+		x = MBurr(self.base_dim-1, alpha=1.0).sample(n, rng)
 		z = np.sum(x ** 2, axis=1, keepdims=True)
 		y = np.hstack([x, z])  # (n, base_dim)
 		return y
@@ -190,6 +193,7 @@ class ParaboloidUniformCore(BaseManifold):
 		if dim < 2:
 			raise ValueError('dim must be >= 2')
 		self.base_dim = dim
+		self.intrinsic_dimension = dim-1
 		self.embedded = False
 
 	def sample(self, n: int, random_state: RandomStateLike = None) -> np.ndarray:
@@ -210,6 +214,7 @@ class SwissRoll(BaseManifold):
 
 	def __init__(self):
 		self.base_dim = 3  # after constructing z matrix
+		self.intrinsic_dimension = 2
 		self.embedded = True
 
 	def _core(self, n: int, rng: np.random.Generator) -> np.ndarray:
@@ -259,6 +264,7 @@ class Sphere(BaseManifold):
 		if dim < 2:
 			raise ValueError('dim must be >= 2')
 		self.base_dim = dim
+		self.intrinsic_dimension = dim-1
 		self.embedded = True
 
 	def _core(self, n: int, rng: np.random.Generator) -> np.ndarray:
@@ -293,6 +299,7 @@ class Torus(BaseManifold):
 	def __init__(self):
 		self.base_dim = 3
 		self.embedded = True
+		self.intrinsic_dimension = 2
 
 	def _core(self, n: int, rng: np.random.Generator) -> np.ndarray:
 		x = rng.uniform(0, 2 * math.pi, size=n)
@@ -329,6 +336,7 @@ class Variety(BaseManifold):
 	def __init__(self):
 		self.base_dim = 3
 		self.embedded = True
+		self.intrinsic_dimension = 2
 
 	def _core(self, n: int, rng: np.random.Generator) -> np.ndarray:
 		x = rng.uniform(-5, 5, size=n)
@@ -367,6 +375,7 @@ class UniformCube(BaseManifold):
 		if dim < 1:
 			raise ValueError('dim must be >= 1')
 		self.base_dim = dim
+		self.intrinsic_dimension = dim
 		self.embedded = False
 
 	def sample(self, n: int, random_state: RandomStateLike = None) -> np.ndarray:
@@ -383,6 +392,7 @@ class Mobius(BaseManifold):
 
 	def __init__(self):
 		self.base_dim = 3
+		self.intrinsic_dimension = 2
 		self.embedded = True
 
 	def _core(self, n: int, rng: np.random.Generator) -> np.ndarray:
@@ -424,6 +434,7 @@ class GaussianMixture(BaseManifold):
 		if dim < 1:
 			raise ValueError('dim must be >= 1')
 		self.base_dim = dim
+		self.intrinsic_dimension = dim
 		self.embedded = False
 		self.means = means if means is not None else [0.0, 10.0, -10.0]
 		self.weights = np.array(weights if weights is not None else [0.3, 0.5, 0.2], dtype=float)
@@ -450,6 +461,7 @@ class GaussianNormal(BaseManifold):
 		if dim < 1:
 			raise ValueError('dim must be >= 1')
 		self.base_dim = dim
+		self.intrinsic_dimension = dim
 		self.embedded = False
 
 	def sample(self, n: int, random_state: RandomStateLike = None) -> np.ndarray:
@@ -468,6 +480,7 @@ class UniformBall(BaseManifold):
 		if dim < 1:
 			raise ValueError('dim must be >= 1')
 		self.base_dim = dim
+		self.intrinsic_dimension = dim
 		self.embedded = False
 
 	def sample(self, n: int, random_state: RandomStateLike = None) -> np.ndarray:
