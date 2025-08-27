@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "intrinsic-dimension-statistics"
+version = "0.1.0"
+description = "Intrinsic Dimension Statistics - CX agent performance measurement"
+authors = ["Juan Sebastian Corredor Rodriguez <js.uniandes10@gmail.com>"]
+readme = "README.md"
+packages = [{include = "statistics", from = "src"}, {include = "manifolds", from = "src"}, {include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.32.3"
+retrying = "^1.3.4"
+pandas = "^2.2.3"
+numpy = "^2.2.1"
+scipy = "^1.16.1"
+scikit-learn = "^1.7.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
